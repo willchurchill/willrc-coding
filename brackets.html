@@ -1,0 +1,102 @@
+<html>
+
+<script>
+
+    /*
+        Write a function which takes an input string and will return whether or not it is well-formed according to the following rules:
+        1. The input string contains characters including any number of three types of bracket
+            - Round brackets ()
+            - Square brackets []
+            - Braces {}
+        2. A string is well formed if for each opening bracket there is a closing bracket of the same type AND brackets are properly nested.
+
+        For example:
+        - (foo)[{bar}] is valid
+        - (foo)[(bar]) is not valid
+    */
+
+    // Take the input as a string, and iterate through it. Put all brackets into an array.
+
+    all_brackets = ["(",")","[","]","{","}"];
+    open_brackets = ["(","[","{"];
+    closed_brackets = [")","]","}"];
+
+    capture_brackets = [];
+    capture_open_brackets = [];
+
+    function parse_input(){
+        
+        input_string = document.getElementById("input_code").value;
+
+        for( i=0; i < input_string.length; i++ ){
+            if( all_brackets.includes( input_string[i] )  ){
+                capture_brackets.push( input_string[i] );
+            }
+        }
+
+        output = check_nesting( capture_brackets );
+
+        if( output == 1 ){
+            document.getElementById("response_text").innerHTML = "This code is fine.";
+        }else{
+            document.getElementById("response_text").innerHTML = "This code sucks.";
+        }
+
+        clear_capture_arrays();
+
+    }
+
+    // Iterate through the array, putting open brackets into a new array. If a closed bracket is found, check the last element of the storage array for a match.
+    // If it matches, remove this element and continue. If it doesn't match, show a fail.
+
+    function check_nesting( capture_brackets ){
+
+        for( i=0; i < capture_brackets.length; i++ ){
+                        
+            if( open_brackets.includes( capture_brackets[i] )  ){
+                
+                capture_open_brackets.push( capture_brackets[i] );
+
+            }else if( closed_brackets.includes( capture_brackets[i] )  ){
+                
+                last_bracket = capture_open_brackets.slice(-1);
+                
+                if( capture_brackets[i] == ")" ){
+                    if( last_bracket == "(" ){
+                        capture_open_brackets.pop();
+                    }else{
+                        return 0;
+                    }
+                }else if( capture_brackets[i] == "]" ){
+                    if( last_bracket == "[" ){
+                        capture_open_brackets.pop();
+                    }else{
+                        return 0;
+                    }
+                }else if( capture_brackets[i] == "}" ){
+                    if( last_bracket == "{" ){
+                        capture_open_brackets.pop();
+                    }else{
+                        return 0;
+                    }
+                }else{ console.log("something went wrong with the check"); }
+            }else{
+                console.log("something went wrong");
+            }
+        }
+
+        return 1;
+
+    }
+
+    function clear_capture_arrays(){
+        capture_brackets = [];
+        capture_open_brackets = [];
+    }
+
+</script>
+
+<input id="input_code"><button onclick="parse_input();">Check</button>
+<p id="response_text"></p>
+
+</html>
